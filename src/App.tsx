@@ -5,7 +5,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
-import Generate from "./pages/Generate";
+import GeneratePage from "./pages/Generate";
 import History from "./pages/History";
 import Examples from "./pages/Examples";
 import NotFound from "./pages/NotFound";
@@ -20,7 +20,7 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Index />} />
-          <Route path="/generate" element={<Generate />} />
+          <Route path="/generate" element={<GeneratePage />} />
           <Route path="/history" element={<History />} />
           <Route path="/examples" element={<Examples />} />
           <Route path="*" element={<NotFound />} />

@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/components/ui/use-toast";
-import { Download, Generate, Loading, Video } from "lucide-react";
+import { Download, Video, Loader } from "lucide-react";
 import Navbar from "@/components/layout/Navbar";
 
 // This is a mock function that would normally call your API
@@ -19,7 +19,7 @@ const generateVideo = async (text: string): Promise<{ video_url: string }> => {
   };
 };
 
-const Generate = () => {
+const GeneratePage = () => {
   const [text, setText] = useState("");
   const [videoURL, setVideoURL] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -84,12 +84,12 @@ const Generate = () => {
                 >
                   {loading ? (
                     <>
-                      <Loading className="h-4 w-4 animate-spin" />
+                      <Loader className="h-4 w-4 animate-spin" />
                       <span>Generating...</span>
                     </>
                   ) : (
                     <>
-                      <Generate className="h-4 w-4" />
+                      <Video className="h-4 w-4" />
                       <span>Generate Video</span>
                     </>
                   )}
@@ -147,4 +147,4 @@ const Generate = () => {
   );
 };
 
-export default Generate;
+export default GeneratePage;
