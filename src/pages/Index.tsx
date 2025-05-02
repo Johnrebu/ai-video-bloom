@@ -2,6 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import Navbar from "@/components/layout/Navbar";
+import { Video } from "lucide-react";
 
 const Index = () => {
   return (
