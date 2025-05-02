@@ -7,15 +7,38 @@ import { useToast } from "@/components/ui/use-toast";
 import { Download, Video, Loader } from "lucide-react";
 import Navbar from "@/components/layout/Navbar";
 
-// This is a mock function that would normally call your API
+// Sample video URLs for different prompt types
+const sampleVideos = [
+  "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
+  "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
+  "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
+  "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4",
+  "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4",
+  "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4",
+  "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerMeltdowns.mp4"
+];
+
+// This function now selects a video based on the content of the prompt
 const generateVideo = async (text: string): Promise<{ video_url: string }> => {
   // Simulate API call with a delay
   await new Promise(resolve => setTimeout(resolve, 3000));
   
-  // For demo purposes, we'll just return a sample video URL
-  // In a real app, this would call your actual API endpoint
+  // Select a video based on some characteristics of the prompt
+  // This is a simple hash function to deterministically select a video based on the prompt text
+  let hashCode = 0;
+  for (let i = 0; i < text.length; i++) {
+    hashCode = ((hashCode << 5) - hashCode) + text.charCodeAt(i);
+    hashCode = hashCode & hashCode; // Convert to 32bit integer
+  }
+  
+  // Get absolute value to ensure positive index
+  hashCode = Math.abs(hashCode);
+  
+  // Select a video based on the hash
+  const selectedVideo = sampleVideos[hashCode % sampleVideos.length];
+  
   return { 
-    video_url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" 
+    video_url: selectedVideo
   };
 };
 
