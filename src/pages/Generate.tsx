@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -18,27 +17,31 @@ const sampleVideos = [
   "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerMeltdowns.mp4"
 ];
 
-// This function now selects a video based on the content of the prompt
+// This function selects videos based on keywords in the prompt
 const generateVideo = async (text: string): Promise<{ video_url: string }> => {
   // Simulate API call with a delay
   await new Promise(resolve => setTimeout(resolve, 3000));
   
-  // Select a video based on some characteristics of the prompt
-  // This is a simple hash function to deterministically select a video based on the prompt text
-  let hashCode = 0;
-  for (let i = 0; i < text.length; i++) {
-    hashCode = ((hashCode << 5) - hashCode) + text.charCodeAt(i);
-    hashCode = hashCode & hashCode; // Convert to 32bit integer
+  const lowerPrompt = text.toLowerCase();
+
+  let videoUrl = "";
+  
+  if (lowerPrompt.includes("forest") || lowerPrompt.includes("nature")) {
+    videoUrl = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4";
+  } else if (lowerPrompt.includes("city") || lowerPrompt.includes("car")) {
+    videoUrl = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4";
+  } else if (lowerPrompt.includes("ocean") || lowerPrompt.includes("beach")) {
+    videoUrl = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4";
+  } else if (lowerPrompt.includes("space") || lowerPrompt.includes("sci-fi")) {
+    videoUrl = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4";
+  } else if (lowerPrompt.includes("adventure") || lowerPrompt.includes("action")) {
+    videoUrl = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4";
+  } else {
+    videoUrl = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerMeltdowns.mp4"; // Fallback
   }
   
-  // Get absolute value to ensure positive index
-  hashCode = Math.abs(hashCode);
-  
-  // Select a video based on the hash
-  const selectedVideo = sampleVideos[hashCode % sampleVideos.length];
-  
   return { 
-    video_url: selectedVideo
+    video_url: videoUrl
   };
 };
 
@@ -95,7 +98,7 @@ const GeneratePage = () => {
                 <Textarea
                   value={text}
                   onChange={(e) => setText(e.target.value)}
-                  placeholder="Enter a detailed description of the scene you want to create. Be specific about style, mood, colors, and action..."
+                  placeholder="Enter a detailed description of the scene you want to create. Try using keywords like 'forest', 'city', 'ocean', 'space', or 'adventure'..."
                   className="min-h-[200px] bg-background/50"
                 />
               </CardContent>
@@ -157,10 +160,10 @@ const GeneratePage = () => {
           <div className="mt-12">
             <h2 className="text-2xl font-bold mb-4">Tips for Great Results</h2>
             <ul className="list-disc list-inside space-y-2 text-muted-foreground">
+              <li>Try using keywords like "forest", "nature", "city", "car", "ocean", "beach", "space", "sci-fi", "adventure", or "action"</li>
               <li>Be specific about visual elements like colors, lighting, and scene composition</li>
               <li>Describe the mood and atmosphere you want to create</li>
               <li>Mention style references (cinematic, animated, realistic, etc.)</li>
-              <li>Specify camera movements and transitions if desired</li>
               <li>Keep your description focused on a single coherent scene for best results</li>
             </ul>
           </div>
