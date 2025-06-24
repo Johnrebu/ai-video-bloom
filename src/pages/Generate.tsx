@@ -1,12 +1,10 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/components/ui/use-toast";
-import { Download, Video, Loader, Key } from "lucide-react";
+import { Download, Video, Loader } from "lucide-react";
 import Navbar from "@/components/layout/Navbar";
-import { ReplicateService } from "@/services/replicateService";
 
 // Sample video URLs for different prompt types
 const sampleVideos = [
@@ -49,7 +47,6 @@ const generateVideo = async (text: string): Promise<{ video_url: string }> => {
 
 const GeneratePage = () => {
   const [text, setText] = useState("");
-  const [apiKey, setApiKey] = useState("");
   const [videoURL, setVideoURL] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
@@ -64,22 +61,10 @@ const GeneratePage = () => {
       return;
     }
 
-    if (!apiKey.trim()) {
-      toast({
-        title: "API Key Required",
-        description: "Please enter your Replicate API key",
-        variant: "destructive"
-      });
-      return;
-    }
-
     try {
       setLoading(true);
-      
-      const replicateService = new ReplicateService(apiKey);
-      const videoUrl = await replicateService.generateVideo(text);
-      
-      setVideoURL(videoUrl);
+      const result = await generateVideo(text);
+      setVideoURL(result.video_url);
       toast({
         title: "Video Generated!",
         description: "Your AI video has been created successfully.",
@@ -88,7 +73,7 @@ const GeneratePage = () => {
       console.error("Error generating video:", error);
       toast({
         title: "Generation Failed",
-        description: error instanceof Error ? error.message : "There was an error generating your video. Please try again.",
+        description: "There was an error generating your video. Please try again.",
         variant: "destructive"
       });
     } finally {
@@ -109,35 +94,13 @@ const GeneratePage = () => {
               <CardHeader>
                 <CardTitle>Describe Your Vision</CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div>
-                  <label htmlFor="apiKey" className="block text-sm font-medium mb-2">
-                    <Key className="inline h-4 w-4 mr-1" />
-                    Replicate API Key
-                  </label>
-                  <Input
-                    id="apiKey"
-                    type="password"
-                    value={apiKey}
-                    onChange={(e) => setApiKey(e.target.value)}
-                    placeholder="Enter your Replicate API key (r8_...)"
-                    className="bg-background/50"
-                  />
-                  <p className="text-xs text-muted-foreground mt-1">
-                    Get your API key from <a href="https://replicate.com" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">replicate.com</a>
-                  </p>
-                </div>
-                
-                <div>
-                  <label htmlFor="prompt" className="block text-sm font-medium mb-2">Video Description</label>
-                  <Textarea
-                    id="prompt"
-                    value={text}
-                    onChange={(e) => setText(e.target.value)}
-                    placeholder="Enter a detailed description of the video you want to create..."
-                    className="min-h-[200px] bg-background/50"
-                  />
-                </div>
+              <CardContent>
+                <Textarea
+                  value={text}
+                  onChange={(e) => setText(e.target.value)}
+                  placeholder="Enter a detailed description of the scene you want to create. Try using keywords like 'forest', 'city', 'ocean', 'space', or 'adventure'..."
+                  className="min-h-[200px] bg-background/50"
+                />
               </CardContent>
               <CardFooter className="flex justify-end">
                 <Button 
@@ -197,11 +160,11 @@ const GeneratePage = () => {
           <div className="mt-12">
             <h2 className="text-2xl font-bold mb-4">Tips for Great Results</h2>
             <ul className="list-disc list-inside space-y-2 text-muted-foreground">
+              <li>Try using keywords like "forest", "nature", "city", "car", "ocean", "beach", "space", "sci-fi", "adventure", or "action"</li>
               <li>Be specific about visual elements like colors, lighting, and scene composition</li>
               <li>Describe the mood and atmosphere you want to create</li>
               <li>Mention style references (cinematic, animated, realistic, etc.)</li>
               <li>Keep your description focused on a single coherent scene for best results</li>
-              <li>Video generation may take 2-5 minutes depending on complexity</li>
             </ul>
           </div>
         </div>
